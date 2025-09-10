@@ -45,8 +45,8 @@ app.MapGet(ApiRoutes.Weather, () =>
 .WithName(ApiRoutes.Weather)
 .WithOpenApi();
 
-app.MapGet(ApiRoutes.Todos, async (AppDbContext db) =>
-    await db.TodoItems.ToListAsync());
+app.MapGet(ApiRoutes.Issues, async (AppDbContext db) =>
+    await db.Issues.ToListAsync());
 
 
 app.Run();

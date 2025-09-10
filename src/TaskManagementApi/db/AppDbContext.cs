@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TaskManagementApi.Data
 {
@@ -9,12 +11,15 @@ namespace TaskManagementApi.Data
         {
         }
 
-        public DbSet<TodoItem> TodoItems { get; set; }
+        // DbSet 类型改为 Issues
+        public DbSet<Issues> Issues { get; set; }
     }
 
-    public class TodoItem
+    // 保留这个带有 [Table("issues")] 的类
+    [Table("issues")] 
+    public class Issues
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
     }
 }
