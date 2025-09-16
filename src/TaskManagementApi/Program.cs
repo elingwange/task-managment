@@ -1,7 +1,12 @@
 using IssueApi;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using TaskApi;
 using TaskManagementApi.Data;
+using TaskManagementApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["Urls"] ?? "http://localhost:5000");
@@ -16,6 +21,40 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
+
+// 添加 Identity 服务
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// 配置 JWT 认证
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtKey = builder.Configuration["Jwt:Key"];
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -25,11 +64,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// 其他中间件配置
 app.UseHttpsRedirection();
 
+// 启用认证和授权中间件
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapIssues();
+
+// 保护任务管理端点
 app.MapUsers();
+app.MapIssues();
+// app.MapUsers().RequireAuthorization();
+// app.MapIssues().RequireAuthorization();
 
 
 app.Run();
