@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Data
 {
@@ -11,14 +12,9 @@ namespace TaskManagementApi.Data
         {
         }
 
-        // DbSet 类型改为 Issues
-        public DbSet<Issues> Issues { get; set; }
+        public DbSet<Issue> Issues { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 
-    [Table("issues")]
-    public class Issues
-    {
-        public int id { get; set; }
-        public string title { get; set; }
-    }
 }

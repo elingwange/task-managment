@@ -1,5 +1,6 @@
 using IssueApi;
 using Microsoft.EntityFrameworkCore;
+using TaskApi;
 using TaskManagementApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,7 @@ app.UseHttpsRedirection();
 
 
 app.MapIssues();
+app.MapUsers();
 
 
 app.Run();
