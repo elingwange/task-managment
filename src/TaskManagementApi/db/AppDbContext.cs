@@ -15,8 +15,7 @@ namespace TaskManagementApi.Data
         public DbSet<Issues> Issues { get; set; }
     }
 
-    // 保留这个带有 [Table("issues")] 的类
-    [Table("issues")] 
+    [Table("issues")]
     public class Issues
     {
         public int id { get; set; }
