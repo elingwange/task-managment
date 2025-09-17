@@ -34,7 +34,7 @@ Content-Type: application/json
 
 
 ### 批量添加 Issues
-POST {{TaskManagementApi_HostAddress}}/issues
+POST {{TaskManagementApi_HostAddress}}/issues/bulk-add
 Content-Type: application/json
 Authorization: Bearer {{JWT_Token}}
 
@@ -62,4 +62,22 @@ Authorization: Bearer {{JWT_Token}}
 ###
 GET {{TaskManagementApi_HostAddress}}/issues/list
 Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+### 修改一个任务
+PUT {{TaskManagementApi_HostAddress}}/issues/5
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+{
+  "id": 5,
+  "title": "更新后的标题",
+  "description": "这是修改后的任务描述。",
+  "status": "in_progress",
+  "priority": "high"
+}
+
+### 删除一个任务
+DELETE {{TaskManagementApi_HostAddress}}/issues/5
+Content-Type: application/json
 Authorization: Bearer {{JWT_Token}}
