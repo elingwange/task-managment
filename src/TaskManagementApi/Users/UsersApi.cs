@@ -24,7 +24,7 @@ internal static class UsersApi
             var user = new User
             {
                 UserName = registerRequest.UserName,
-                Email = registerRequest.Email
+                Email = registerRequest.Email,
             };
 
             // 将原始密码传递给 CreateAsync 方法

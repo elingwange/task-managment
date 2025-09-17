@@ -7,6 +7,7 @@ using TaskManagementApi.Data;
 using TaskManagementApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["Urls"] ?? "http://localhost:5000");
@@ -18,7 +19,9 @@ builder.Services.AddSwaggerGen();
 
 // PostgreSQL DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options
+    .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+// .UseSnakeCaseNamingConvention()
 );
 
 
