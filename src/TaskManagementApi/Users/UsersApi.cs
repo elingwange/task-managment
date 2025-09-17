@@ -1,8 +1,12 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementApi.Data;
 using TaskManagementApi.Models;
+
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace TaskApi;
 
@@ -47,7 +51,7 @@ internal static class UsersApi
         });
 
 
-        group.MapPost("/login", async (LoginRequest loginRequest, UserManager<User> userManager, SignInManager<User> signInManager) =>
+        group.MapPost("/login", async (LoginRequest loginRequest, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration) =>
         {
             // 根据用户名查找用户
             // 1. 尝试用用户名查找用户
@@ -71,8 +75,30 @@ internal static class UsersApi
             if (result.Succeeded)
             {
                 // 创建 JWT 令牌
-                var token = "JWT_TOKEN_HERE"; // 这里需要生成一个真实的 JWT
-                return Results.Ok(new { token });
+                // 1. 定义 JWT 载荷（claims），包含用户ID和用户名
+                var claims = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
+
+                // 2. 从配置中获取密钥
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                // 3. 创建令牌
+                var token = new JwtSecurityToken(
+                    issuer: configuration["Jwt:Issuer"],
+                    audience: configuration["Jwt:Audience"],
+                    claims: claims,
+                    // expires: DateTime.UtcNow.AddHours(1), // 令牌有效期为 1 小时
+                    expires: DateTime.UtcNow.AddYears(1), // Test: 令牌有效期为 1 年
+                    signingCredentials: creds
+                );
+
+                // 4. 将令牌转换为字符串并返回
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                return Results.Ok(new { token = tokenString });
             }
 
             return Results.Unauthorized();

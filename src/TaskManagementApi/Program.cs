@@ -47,8 +47,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtIssuer,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
@@ -77,9 +77,9 @@ app.UseAuthorization();
 
 // 保护任务管理端点
 app.MapUsers();
-app.MapIssues();
-// app.MapUsers().RequireAuthorization();
-// app.MapIssues().RequireAuthorization();
+//app.MapUsers().RequireAuthorization();
+// app.MapIssues();
+app.MapIssues().RequireAuthorization();
 
 
 app.Run();

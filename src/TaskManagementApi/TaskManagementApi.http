@@ -1,7 +1,8 @@
 @TaskManagementApi_HostAddress = http://localhost:5000
 
-GET {{TaskManagementApi_HostAddress}}/issues/
+GET {{TaskManagementApi_HostAddress}}/issues/list
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYjRiZDRkYi1kODBkLTQyZmQtYjU2Ny02NDM5MmNhYzZkZTkiLCJqdGkiOiI0NzQ3M2ZkYS1kZDE5LTRiZjItOGNlMS1jNzJkOWIzNGUzNmUiLCJleHAiOjE3ODk2MDY4MTQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.Q9M9Fbg2H49nj84vmtwl7INgxiz9buKk2e8ovq8P89M
 
 ###
 GET {{TaskManagementApi_HostAddress}}/users/
