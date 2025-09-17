@@ -1,10 +1,6 @@
 @TaskManagementApi_HostAddress = http://localhost:5000
+@JWT_Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYjRiZDRkYi1kODBkLTQyZmQtYjU2Ny02NDM5MmNhYzZkZTkiLCJqdGkiOiI0NzQ3M2ZkYS1kZDE5LTRiZjItOGNlMS1jNzJkOWIzNGUzNmUiLCJleHAiOjE3ODk2MDY4MTQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.Q9M9Fbg2H49nj84vmtwl7INgxiz9buKk2e8ovq8P89M
 
-GET {{TaskManagementApi_HostAddress}}/issues/list
-Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYjRiZDRkYi1kODBkLTQyZmQtYjU2Ny02NDM5MmNhYzZkZTkiLCJqdGkiOiI0NzQ3M2ZkYS1kZDE5LTRiZjItOGNlMS1jNzJkOWIzNGUzNmUiLCJleHAiOjE3ODk2MDY4MTQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.Q9M9Fbg2H49nj84vmtwl7INgxiz9buKk2e8ovq8P89M
-
-###
 GET {{TaskManagementApi_HostAddress}}/users/
 Accept: application/json
 
@@ -27,3 +23,43 @@ Content-Type: application/json
   "email": "evan@example.com",
   "password": "MySuperSecretPassword123@"
 }
+
+
+
+
+
+
+
+
+
+
+### 批量添加 Issues
+POST {{TaskManagementApi_HostAddress}}/issues
+Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+[
+  {
+    "title": "设计用户界面",
+    "description": "为任务管理应用设计一个简洁直观的UI。",
+    "status": "open",
+    "priority": "high"
+  },
+  {
+    "title": "编写单元测试",
+    "description": "为所有 API 接口编写全面的单元测试，确保代码质量。",
+    "status": "in_progress",
+    "priority": "medium"
+  },
+  {
+    "title": "集成第三方服务",
+    "description": "将应用与通知服务（如 Slack 或 Email）集成，以提醒用户。",
+    "status": "in_progress",
+    "priority": "high"
+  }
+]
+
+###
+GET {{TaskManagementApi_HostAddress}}/issues/list
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
