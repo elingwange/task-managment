@@ -29,11 +29,13 @@ public partial class Issue
 }
 
 // C# 枚举，直接映射到 PostgreSQL 数据库中的 public.status ENUM 类型
+// [backlog, todo, in_progress, done]
 public enum IssueStatus
 {
-    open,
+    backlog,
+    todo,
     in_progress,
-    completed
+    done
 }
 
 // C# 枚举，直接映射到 PostgreSQL 数据库中的 public.priority ENUM 类型
@@ -42,4 +44,28 @@ public enum IssuePriority
     low,
     medium,
     high
+}
+
+
+public class DashboardData
+{
+    public int TotalTasks { get; set; }
+    public int CompletedTasks { get; set; }
+    public double CompletionRate { get; set; }
+
+    public List<TaskTrend> TaskCompletionTrend { get; set; }
+
+    public List<TaskStatusDistribution> TaskStatusDistribution { get; set; }
+}
+
+public class TaskTrend
+{
+    public string Label { get; set; }
+    public int Data { get; set; }
+}
+
+public class TaskStatusDistribution
+{
+    public string Status { get; set; }
+    public int Count { get; set; }
 }

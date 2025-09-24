@@ -12,8 +12,8 @@ using TaskManagementApi.Data;
 namespace TaskManagementApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250916225141_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250923230333_UpdateIssueStatusToEnum")]
+    partial class UpdateIssueStatusToEnum
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,8 @@ namespace TaskManagementApi.Migrations
                 .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "issue_priority", new[] { "low", "medium", "high" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "issue_status", new[] { "backlog", "todo", "in_progress", "done" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -200,8 +202,9 @@ namespace TaskManagementApi.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("priority");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("status");
 
                     b.Property<string>("Title")

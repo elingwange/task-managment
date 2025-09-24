@@ -1,5 +1,3 @@
-
-// Data/AppDbContext.cs
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementApi.Models;
@@ -14,13 +12,26 @@ public class AppDbContext : IdentityDbContext<User>
     {
     }
 
-    // 这里不再需要 DbSet<User>，因为 IdentityDbContext 已经包含了它
     public DbSet<Issue> Issues { get; set; }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // 明确告诉 EF Core 如何处理 ENUM
+        modelBuilder.HasPostgresEnum<IssueStatus>();
+        modelBuilder.HasPostgresEnum<IssuePriority>();
+
+        modelBuilder.Entity<Issue>(entity =>
+        {
+            // 为 Status 字段添加显式的类型转换，确保它能正确地从数据库的 ENUM 类型映射
+            entity.Property(e => e.Status)
+                  .HasConversion<string>();
+
+            // 为 Priority 字段添加显式的类型转换
+            entity.Property(e => e.Priority)
+                  .HasConversion<string>();
+        });
 
         // 这是一个更健壮的实现，可以处理 Identity 表名和列名
         // 它会把 'AspNetUsers' -> 'aspnetusers'，'NormalizedUserName' -> 'normalized_user_name'

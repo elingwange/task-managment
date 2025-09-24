@@ -1,27 +1,35 @@
-@TaskManagementApi_HostAddress = http://localhost:5000
-@JWT_Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYjRiZDRkYi1kODBkLTQyZmQtYjU2Ny02NDM5MmNhYzZkZTkiLCJqdGkiOiI0NzQ3M2ZkYS1kZDE5LTRiZjItOGNlMS1jNzJkOWIzNGUzNmUiLCJleHAiOjE3ODk2MDY4MTQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.Q9M9Fbg2H49nj84vmtwl7INgxiz9buKk2e8ovq8P89M
+@HostAddress = 10.176.230.168:5555
+//@JWT_Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYjRiZDRkYi1kODBkLTQyZmQtYjU2Ny02NDM5MmNhYzZkZTkiLCJqdGkiOiI0NzQ3M2ZkYS1kZDE5LTRiZjItOGNlMS1jNzJkOWIzNGUzNmUiLCJleHAiOjE3ODk2MDY4MTQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.Q9M9Fbg2H49nj84vmtwl7INgxiz9buKk2e8ovq8P89M
+@JWT_Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjJjNjRhMy01ODg2LTRiNDItYTc3OC01ODYxZmZjYzNjZWQiLCJqdGkiOiJlYzVlZjIyMS04OTkwLTQwZjgtYWJhYS1jYTQxYzc3MDdlNGQiLCJleHAiOjE3OTAwNDkzMzQsImlzcyI6IlRhc2tNYW5hZ2VtZW50QXBpSXNzdWVyIiwiYXVkIjoiVGFza01hbmFnZW1lbnRBcGkifQ.4jKvZ2X9SRg3lkDa-JkqzMNXqP1_VnyQN56_kn9fFNE
 
-GET {{TaskManagementApi_HostAddress}}/users/
+
+GET {{HostAddress}}/users/
 Accept: application/json
 
 ### Register a new user
-POST {{TaskManagementApi_HostAddress}}/users/register
+# POST {{HostAddress}}/users/register
+POST http://10.176.230.168:5555/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "userName": "evan",
-  "email": "evan@example.com",
-  "password": "MySuperSecretPassword123@"
+  "userName": "Rain",
+  "email": "rain@egmail.com",
+  "password": "Abc123@"
 }
 
 ### Login a user
-POST {{TaskManagementApi_HostAddress}}/users/login
+POST http://10.176.230.168:5555/users/login HTTP/1.1
 Content-Type: application/json
 
+# {
+#   "userName": "",
+#   "email": "evan@example.com",
+#   "password": "MySuperSecretPassword123@"
+# }
 {
   "userName": "",
-  "email": "evan@example.com",
-  "password": "MySuperSecretPassword123@"
+  "email": "abc@egmail.com",
+  "password": "Abc123@"
 }
 
 
@@ -32,52 +40,53 @@ Content-Type: application/json
 
 
 
+###
+//GET {{HostAddress}}/issues/list
+GET http://10.176.230.168:5555/issues/list HTTP/1.1
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
+
+###
+//GET {{HostAddress}}/issues/{id}
+GET http://10.176.230.168:5555/issues/18 HTTP/1.1
+Accept: application/json
+Authorization: Bearer {{JWT_Token}}
 
 ### 批量添加 Issues
-POST {{TaskManagementApi_HostAddress}}/issues/bulk-add
+POST http://10.176.230.168:5555/issues/bulk-add HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{JWT_Token}}
 
 [
   {
-    "title": "设计用户界面",
+    "title": "设计任务管理应用的UI",
     "description": "为任务管理应用设计一个简洁直观的UI。",
     "status": "open",
-    "priority": "high"
-  },
-  {
-    "title": "编写单元测试",
-    "description": "为所有 API 接口编写全面的单元测试，确保代码质量。",
-    "status": "in_progress",
-    "priority": "medium"
-  },
-  {
-    "title": "集成第三方服务",
-    "description": "将应用与通知服务（如 Slack 或 Email）集成，以提醒用户。",
-    "status": "in_progress",
     "priority": "high"
   }
 ]
 
-###
-GET {{TaskManagementApi_HostAddress}}/issues/list
-Accept: application/json
-Authorization: Bearer {{JWT_Token}}
-
 ### 修改一个任务
-PUT {{TaskManagementApi_HostAddress}}/issues/5
+PUT http://10.176.230.168:5555/issues/18
 Content-Type: application/json
 Authorization: Bearer {{JWT_Token}}
 
 {
-  "id": 5,
+  "id": 18,
   "title": "更新后的标题",
   "description": "这是修改后的任务描述。",
-  "status": "in_progress",
+  "status": "completed",
   "priority": "high"
 }
 
 ### 删除一个任务
-DELETE {{TaskManagementApi_HostAddress}}/issues/5
+DELETE {{HostAddress}}/issues/5
 Content-Type: application/json
+Authorization: Bearer {{JWT_Token}}
+
+
+###
+//GET {{HostAddress}}/issues/dashboard
+GET http://10.176.230.168:5555/issues/dashboard HTTP/1.1
+Accept: application/json
 Authorization: Bearer {{JWT_Token}}

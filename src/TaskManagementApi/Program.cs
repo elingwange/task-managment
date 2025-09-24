@@ -7,24 +7,38 @@ using TaskManagementApi.Data;
 using TaskManagementApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using System.Text.Json.Serialization;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls(builder.Configuration["Urls"] ?? "http://localhost:5000");
 
 // Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// PostgreSQL DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options
-    .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-// .UseSnakeCaseNamingConvention()
-);
 
+// 在配置数据库服务之前添加此行
+// 启用对未映射枚举类型的支持
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+dataSourceBuilder.EnableUnmappedTypes();
+var dataSource = dataSourceBuilder.Build();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(dataSource));
+
+
+// 在 services 中添加 CORS 服务
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 
 // 添加 Identity 服务
@@ -73,6 +87,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// 在应用中使用 CORS 中间件
+app.UseCors("AllowAllOrigins");
+
 // 其他中间件配置
 app.UseHttpsRedirection();
 
@@ -84,9 +101,8 @@ app.UseAuthorization();
 // 保护任务管理端点
 app.MapUsers();
 //app.MapUsers().RequireAuthorization();
-// app.MapIssues();
-app.MapIssues().RequireAuthorization();
-
+app.MapIssues();
+//app.MapIssues().RequireAuthorization();
 
 app.Run();
 
